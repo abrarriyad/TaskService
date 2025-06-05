@@ -1,10 +1,11 @@
 package com.example.taskservice.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 
-public record Task(
-        @JsonProperty("Id")
-        String id,
-        String description
-) {
+@Data
+public class Task {
+
+    private String id;
+    private String description;
+
 }

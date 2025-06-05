@@ -1,7 +1,7 @@
 package com.example.taskservice.controller;
 
-import com.example.taskservice.entity.Task;
-import com.example.taskservice.entity.TaskResponse;
+import com.example.taskservice.dto.TaskDto;
+import com.example.taskservice.dto.TaskResponse;
 import com.example.taskservice.exception.TaskNotFoundException;
 import com.example.taskservice.service.TaskService;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +26,8 @@ public class TaskController {
         log.debug("Received request for task: {}", id);
 
         try {
-            Task task = taskService.getTask(id);
-            return ResponseEntity.ok(TaskResponse.success(task));
+            TaskDto taskDto = taskService.getTask(id);
+            return ResponseEntity.ok(TaskResponse.success(taskDto));
 
         } catch (TaskNotFoundException e) {
             log.debug("Task not found: {}", id);
