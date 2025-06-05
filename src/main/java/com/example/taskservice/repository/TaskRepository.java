@@ -26,6 +26,7 @@ public class TaskRepository {
         log.info("Task repository initialized with base path: {}", this.path.toAbsolutePath());
     }
 
+
     public Optional<Task> findByUUID(String uuid){
         try{
             Path taskFile = path.resolve(uuid+".json");

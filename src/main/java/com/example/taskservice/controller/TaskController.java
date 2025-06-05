@@ -27,6 +27,7 @@ public class TaskController {
 
         try {
             TaskDto taskDto = taskService.getTask(id);
+            log.info("Task found: {}",id);
             return ResponseEntity.ok(TaskResponse.success(taskDto));
 
         } catch (TaskNotFoundException e) {

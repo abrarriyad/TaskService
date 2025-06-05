@@ -4,7 +4,13 @@ server:
 spring:
   application:
     name: Task Service
-
 task:
   file:
     base-path: "../Tasks"
+
+logging:
+  level:
+    org.springframework.cache: DEBUG
+
+
+
