@@ -1,15 +1,17 @@
-package com.example.taskservice;
+package com.example.taskservice.config;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.time.Duration;
-
 @Configuration
 public class CacheConfig {
+
+    @Value("${cache.task.maximum-size:5}")
+    private int cacheMaximumSize;
 
     @Bean
     public CacheManager cacheManager() {
@@ -17,8 +19,8 @@ public class CacheConfig {
 
         cacheManager.registerCustomCache("taskCache",
                 Caffeine.newBuilder()
-                        .maximumSize(5)
-                        .expireAfterWrite(Duration.ofHours(1))
+                        .maximumSize(cacheMaximumSize)
+                        .recordStats()
                         .build());
 
         return cacheManager;

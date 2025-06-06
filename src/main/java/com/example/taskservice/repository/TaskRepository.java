@@ -1,7 +1,8 @@
 package com.example.taskservice.repository;
 
-
 import com.example.taskservice.entity.Task;
+import com.example.taskservice.exception.MalformedJsonException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,24 +27,26 @@ public class TaskRepository {
         log.info("Task repository initialized with base path: {}", this.path.toAbsolutePath());
     }
 
-
-    public Optional<Task> findByUUID(String uuid){
-        try{
-            Path taskFile = path.resolve(uuid+".json");
+    public Optional<Task> findByUUID(String uuid) {
+        try {
+            Path taskFile = path.resolve(uuid + ".json");
             if (Files.notExists(taskFile)) {
                 log.debug("Task file not found: {}", taskFile);
                 return Optional.empty();
             }
+            
             String content = Files.readString(taskFile);
             Task task = objectMapper.readValue(content, Task.class);
 
             log.debug("Successfully loaded task from file: {}", uuid);
             return Optional.of(task);
 
-        } catch (IOException e){
+        } catch (JsonProcessingException e) {
+            log.error("Malformed JSON in task file: {}", uuid, e);
+            throw new MalformedJsonException("Malformed JSON in task file: " + uuid, e);
+        } catch (IOException e) {
             log.error("Error reading task file: {}", uuid, e);
             throw new RuntimeException("Failed to read task: " + uuid, e);
         }
     }
-
 }
