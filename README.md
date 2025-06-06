@@ -169,6 +169,15 @@ task:
     base-path: ../Tasks  # Development
     base-path: /app/Tasks  # Production
 ```
+### Production Deployment
+
+```bash
+# Production build with build args
+docker build \
+  --build-arg BUILD_VERSION=1.0.0 \
+  --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
+  --build-arg VCS_REF=$(git rev-parse HEAD) \
+  -t taskservice:1.0.0 .
 
 # Run with production profile
 docker run -d \
@@ -177,6 +186,19 @@ docker run -d \
   -v /data/tasks:/app/Tasks \
   -e SPRING_PROFILES_ACTIVE=prod \
   taskservice:1.0.0
+```
+
+
+### Local Development
+```bash
+# Start application
+./mvnw spring-boot:run
+
+# Run tests
+./mvnw test
+
+# Package application
+./mvnw clean package
 ```
 
 ### Generate Test Data
