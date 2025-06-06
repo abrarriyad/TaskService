@@ -1,11 +1,10 @@
 package com.example.taskservice.dto;
 
-public record TaskResponse(
-        TaskDto data,
-        String status
-) {
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    public static TaskResponse success(TaskDto task){
-        return new TaskResponse(task, "success");
-    }
+public record TaskResponse(
+        @JsonProperty("Id")
+        String id,
+        String description
+) {
 }

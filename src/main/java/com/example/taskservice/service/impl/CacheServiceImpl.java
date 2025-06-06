@@ -19,7 +19,7 @@ public class CacheServiceImpl implements CacheService {
     @Override
     @Cacheable(value = "taskCache", key = "#id")
     public Task getTaskFromCache(String id) {
-        log.info("Cache MISS - fetching from DB for id: " + id);
+        log.info("Cache MISS - fetching from disk for id: " + id);
         return taskRepository.findByUUID(id).orElse(null);
     }
 }
