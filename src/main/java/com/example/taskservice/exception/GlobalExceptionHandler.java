@@ -14,6 +14,13 @@ import jakarta.validation.ConstraintViolationException;
 @Slf4j
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException ex) {
+        log.debug("Validation constraint violation: {}", ex.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse("Invalid UUID format", HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
     @ExceptionHandler(TaskNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleTaskNotFoundException(TaskNotFoundException ex) {
         log.debug("Task not found: {}", ex.getMessage());

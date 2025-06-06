@@ -15,32 +15,13 @@ public class OpenApiConfig {
 
     @Bean
     public OpenAPI taskServiceOpenAPI() {
-        Server devServer = new Server();
-        devServer.setUrl("http://localhost:8080");
-        devServer.setDescription("Development server");
-
-        Server prodServer = new Server();
-        prodServer.setUrl("https://api.taskservice.com");
-        prodServer.setDescription("Production server");
-
-        Contact contact = new Contact();
-        contact.setEmail("admin@taskservice.com");
-        contact.setName("TaskService Team");
-        contact.setUrl("https://www.taskservice.com");
-
-        License license = new License()
-                .name("MIT License")
-                .url("https://choosealicense.com/licenses/mit/");
 
         Info info = new Info()
                 .title("TaskService API")
                 .version("1.0.0")
-                .contact(contact)
-                .description("REST API for Task Management with LRU Caching")
-                .license(license);
+                .description("REST API for Task Management with LRU Caching");
 
         return new OpenAPI()
-                .info(info)
-                .servers(List.of(devServer, prodServer));
+                .info(info);
     }
 } 
