@@ -1,16 +1,29 @@
 server:
-  port: 9090
+  port: 8080
 
 spring:
   application:
-    name: Task Service
+    name: taskservice
+  cache:
+    type: caffeine
+
 task:
   file:
-    base-path: "../Tasks"
+    base-path: ../Tasks
+
+cache:
+  task:
+    maximum-size: 5
 
 logging:
   level:
-    org.springframework.cache: DEBUG
+    com.example.taskservice: INFO
+    org.springframework.cache: INFO
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
 
 
