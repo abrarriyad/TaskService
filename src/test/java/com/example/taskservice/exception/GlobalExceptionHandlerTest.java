@@ -9,6 +9,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import jakarta.validation.ConstraintViolationException;
+import java.util.HashSet;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -20,12 +23,27 @@ class GlobalExceptionHandlerTest {
     private TaskNotFoundException taskNotFoundException;
     private MalformedJsonException malformedJsonException;
     private RuntimeException genericException;
+    private ConstraintViolationException constraintViolationException;
 
     @BeforeEach
     void setUp() {
         taskNotFoundException = new TaskNotFoundException("Test task not found");
         malformedJsonException = new MalformedJsonException("Test malformed JSON", new RuntimeException("JSON parse error"));
         genericException = new RuntimeException("Test generic error");
+        constraintViolationException = new ConstraintViolationException("Invalid UUID format", new HashSet<>());
+    }
+
+    @Test
+    void handleConstraintViolationException_ReturnsBadRequest() {
+        // When
+        ResponseEntity<ErrorResponse> response = globalExceptionHandler
+                .handleConstraintViolationException(constraintViolationException);
+
+        // Then
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("Invalid UUID format", response.getBody().message());
+        assertEquals(400, response.getBody().status());
     }
 
     @Test

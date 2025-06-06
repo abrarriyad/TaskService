@@ -68,40 +68,45 @@ class TaskServiceIntegrationTest {
     }
 
     @Test
-    void getTask_InvalidUUID_Returns500() throws Exception {
+    void getTask_InvalidUUID_Returns400() throws Exception {
         // Given
         String invalidUUID = "invalid-uuid-format";
         
         // When & Then
         mockMvc.perform(get("/getTask/{id}", invalidUUID))
-                .andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.message").value("Internal server error"));
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Invalid UUID format"))
+                .andExpect(jsonPath("$.status").value(400));
     }
 
     @Test
     void getTask_EmptyUUID_Returns500() throws Exception {
-        // When & Then - Empty UUID path should return 500 due to validation
+        // When & Then - Empty UUID path should return 500 (internal server error due to missing path variable)
         mockMvc.perform(get("/getTask/"))
                 .andExpect(status().isInternalServerError());
     }
 
     @Test
-    void getTask_UUIDWithInvalidCharacters_Returns500() throws Exception {
+    void getTask_UUIDWithInvalidCharacters_Returns400() throws Exception {
         // Given
         String invalidUUID = "123e4567-e89b-12d3-a456-42661417400g"; // 'g' is invalid hex
         
         // When & Then
         mockMvc.perform(get("/getTask/{id}", invalidUUID))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Invalid UUID format"))
+                .andExpect(jsonPath("$.status").value(400));
     }
 
     @Test
-    void getTask_UUIDTooShort_Returns500() throws Exception {
+    void getTask_UUIDTooShort_Returns400() throws Exception {
         // Given
         String shortUUID = "123e4567-e89b-12d3-a456";
         
         // When & Then
         mockMvc.perform(get("/getTask/{id}", shortUUID))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Invalid UUID format"))
+                .andExpect(jsonPath("$.status").value(400));
     }
 } 

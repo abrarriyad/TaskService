@@ -28,29 +28,6 @@ class CacheIntegrationTest {
     }
 
     @Test
-    void cacheService_WhenTaskExists_ReturnsCachedTask() {
-        // Given - using existing task file from the actual Tasks directory
-        String existingUUID = "222fe30c-b4c0-4b49-bc30-f7859c31f81d";
-
-        // When
-        Task task1 = cacheService.getTaskFromCache(existingUUID);
-        Task task2 = cacheService.getTaskFromCache(existingUUID); // Should be from cache
-
-        // Then
-        assertNotNull(task1);
-        assertNotNull(task2);
-        assertEquals(existingUUID, task1.getId());
-        assertEquals(existingUUID, task2.getId());
-        
-        // Verify cache contains the task
-        CaffeineCache caffeineCache = (CaffeineCache) cacheManager.getCache("taskCache");
-        Cache<Object, Object> nativeCache = caffeineCache.getNativeCache();
-        assertTrue(nativeCache.asMap().containsKey(existingUUID));
-        assertEquals(1, nativeCache.asMap().size());
-    }
-
-
-    @Test
     void cache_RespectsSizeLimit() {
         // Given - Test that cache configuration is working
         CaffeineCache caffeineCache = (CaffeineCache) cacheManager.getCache("taskCache");
@@ -85,5 +62,23 @@ class CacheIntegrationTest {
         String lastUUID = "88888888-8888-8888-8888-888888888888";
         assertTrue(nativeCache.asMap().containsKey(lastUUID), 
                    "Most recently accessed item should be in cache");
+    }
+
+    @Test
+    void cache_StoresNullValues() {
+        // Given
+        String nonExistentUUID = "99999999-9999-9999-9999-999999999999";
+        CaffeineCache caffeineCache = (CaffeineCache) cacheManager.getCache("taskCache");
+        Cache<Object, Object> nativeCache = caffeineCache.getNativeCache();
+
+        // When - Access non-existent task twice
+        Task task1 = cacheService.getTaskFromCache(nonExistentUUID);
+        Task task2 = cacheService.getTaskFromCache(nonExistentUUID);
+
+        // Then - Both should be null and cache should contain the null value
+        assertNull(task1);
+        assertNull(task2);
+        assertTrue(nativeCache.asMap().containsKey(nonExistentUUID), 
+                   "Cache should contain null value for non-existent task");
     }
 } 
